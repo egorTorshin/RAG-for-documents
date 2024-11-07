@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Финансовые данные</title>
+     <style>
+
+        body, html {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+        }
+        .filters {
+        display: flex;
+        justify-content: space-around; /* Distribute filters evenly */
+        width: 80%;
+        margin-bottom: 20px;
+        /* Remove the gap */
+    }
+
+    .filters select {
+        appearance: none; /* Remove default appearance */
+        -webkit-appearance: none; /* For Safari */
+        padding: 10px 40px; /* Add padding */
+        border: 1px solid #ccc; /* Add a border */
+        border-radius: 5px;  /* Rounded corners */
+        background-color: #fff;
+        font-size: 16px;
+        cursor: pointer; /* Make it look clickable */
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3E%3C/svg%3E"); /* Add a dropdown arrow */
+        background-repeat: no-repeat;
+        background-position: right 10px center; /* Position the arrow */
+        background-size: 1.5em;  /* Adjust arrow size */
+         overflow-y: hidden;
+    }
+
+    /* Hover effect */
+    .filters select:hover {
+        border-color: #999;
+    }
+
+    /* Focus effect */
+    .filters select:focus {
+        outline: none; /* Remove default focus outline */
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+    }
+
+    .chart-container {
+        width: 80%;
+        height: 80%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: add shadow to the chart */
+        border-radius: 10px;
+    }
+
+        nav:hover ~ .container {
+    filter: blur(5px); /* Размытие при наведении на nav */
+    transition: filter 0.3s ease, width 0.3s ease; /* Добавляем transition для filter */
+
+}
+nav {
+    background-color: #ed1c24; /* Красный МТС */
+    height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 200px;
+    opacity: 0.8;
+    transform: translateX(200px);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 1;
+}
+
+nav:hover {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav li {
+    margin-bottom: 10px;
+}
+        nav a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 5px;
+    position: relative; /* Добавляем position: relative для позиционирования подчеркивания */
+    display: inline-block; /*  Делаем ссылку блочным элементом для подчеркивания */
+
+}
+nav a::after { /* Псевдоэлемент для создания подчеркивания */
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;  /* Изначально ширина подчеркивания 0 */
+    height: 2px;
+    background-color: white; /* Цвет подчеркивания */
+    transition: width 0.3s ease; /* Плавный переход ширины */
+}
+nav a:hover::after {
+    width: 100%; /* При наведении ширина подчеркивания становится 100% */
+}
+nav a:hover {
+    background-color: #d1161d; /* Более темный красный МТС */
+}
+
+nav a.active {
+    color: white; /* Цвет активной ссылки */
+}
+
+nav a.active::after { /* Подчеркивание для активной ссылки */
+    width: 100%;
+}
+
+    </style>
+</head>
+<body>
+<nav>
+        <ul>
+            <li><a href="index.html" >Спросить у бота</a></li>
+            <li><a href="statistics.html" class="active">Статистика</a></li>
+
+        </ul>
+    </nav>
+<div class="container">
+    <div class="filters">
+        <select id="companyFilter1"> <!-- Multiple select for Company 1 -->
+            <option value="mts" selected>МТС</option>
+            <option value="beeline">Билайн</option>
+            <option value="megafon">Мегафон</option>
+        </select>
+        <select id="companyFilter2" type = 'checkbox'> <!-- Multiple select for Company 2 -->
+            <option value="mts">МТС</option>
+            <option value="beeline">Билайн</option>
+            <option value="megafon">Мегафон</option>
+        </select>
+        <select id="indicatorFilter">
+            <option value="assets">Активы</option>
+            <option value="capital">Капитал</option>
+            <option value="longTermLiabilities">Долгосрочные обязательства</option>
+            <option value="shortTermLiabilities">Краткосрочные обязательства</option>
+            <option value="revenue">Выручка</option>
+            <option value="operatingProfit">Операционная прибыль</option>
+            <option value="profit">Прибыль за год</option>
+            <option value="totalIncome">Совокупный доход за год</option>
+        </select>
+        <select id="chartTypeFilter">
+            <option value="line">Линейный график</option>
+            <option value="bar">Столбчатая диаграмма</option>
+        </select>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+
+
+const data = {
+    years: [2018, 2019, 2020, 2021, 2022, 2023],
+    mts: {
+        assets: [551.07, 915.993, 823.91, 919.203, 1015.818, 1082.930, 1291.545],
+        capital: [124.205, 77.565, 36.394, 36.394, 14.604, 3.3617, 1.72],
+        longTermLiabilities: [270.194, 542.957, 439.059, 439.059, 557.899, 535.202, 472.688],
+        shortTermLiabilities: [156.671, 295.471, 348.457, 348.457, 328.614, 551.345, 817.137],
+        revenue: [417.918, 451.466, 476.106, 494.926, 527.921, 541.749, 605.991],
+        operatingProfit: [90.241, 109.021, 114.188, 112.603, 118.005, 109.437, 12.846],
+        profit: [56.59, 7.832, 55.099, 62.073, 64.269, 33.435, 55.529],
+        totalIncome: [53.766, 15.631, 63.53, 63.717, 65.466, 35.331, 60.358]
+    },
+    beeline: { // Data for Beeline
+        assets: [457.699, 530.503, 532.18, 573.159, 491.079, 597.408],
+        capital: [136.816, 138.064, 157.317, 138.075, 124.115, 100.687],
+        longTermLiabilities: [217.772, 258.48, 233.787, 308.273, 266.096, 382.21],
+        shortTermLiabilities: [103.111, 133.959, 141.076, 126.811, 100.868, 114.511],
+        revenue: [349.741, 347.416, 314.058, 332, 286.384, 303.478],
+        operatingProfit: [41.098, 57.125, 37.008, 37.273, 7.14, 46.333],
+        profit: [9.351, 17.435, 5.829, 17.488, 35.116, 3.372],
+        totalIncome: [ 15.976, 11.645, 1.742, 16.669, 37.555, 5.965]
+    },
+    megafon: { // Data for Megafon
+        assets: [ 510.009, 693.156, 773.566, 788.135, 654.728, 612.058],
+        capital: [ 70.403, 104.649, 233.024, 229.023, 91.546, 83.556],
+        longTermLiabilities: [ 328.003, 474.914, 384.576, 350.696, 333.605, 281.116],
+        shortTermLiabilities: [ 111.603, 113.593, 155.966, 208.416, 229.577, 247.386],
+        revenue: [ 335.541, 348.961, 332.159, 354.19, 398.642, 444.043],
+        operatingProfit: [ 58.45, 62.605, 73.435, 66.837, 83.28, 106.605],
+        profit: [ 32.854, 8.179, 26.772, 65.811, 27.911, 39.982],
+        totalIncome: [ 33.644, 66.058, 26.864, 65.009, 33.483, 38.759]
+    }
+};
+
+let currentChart = null;
+
+function getChartColors(companyName) {
+   if (companyName === 'beeline') {
+        return {
+            borderColor: 'black',
+            backgroundColor: createHorizontalStripedPattern('yellow', 'black') // Use horizontal stripes
+        };
+    } else if (companyName === 'megafon') {
+        return {
+            borderColor: 'green',
+            backgroundColor: 'green'
+        };
+    } else {
+        return {
+            borderColor: '#ed1c24',
+            backgroundColor: 'rgba(176, 0, 32)'
+        };
+    }
+}
+function createHorizontalStripedPattern(color1, color2, stripeWidth = 10) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = stripeWidth * 2;
+    canvas.height = stripeWidth * 2;
+
+    ctx.fillStyle = color1;
+    ctx.fillRect(0, 0, canvas.width, stripeWidth); // Fill top stripe
+    ctx.fillStyle = color2;
+    ctx.fillRect(0, stripeWidth, canvas.width, stripeWidth); // Fill bottom stripe
+
+    return ctx.createPattern(canvas, 'repeat');
+}
+
+function updateChart() {
+
+    const selectedCompanies1 = Array.from(document.getElementById('companyFilter1').selectedOptions).map(option => option.value);
+    const selectedCompanies2 = Array.from(document.getElementById('companyFilter2').selectedOptions).map(option => option.value);
+
+
+    const selectedCompanies = [...selectedCompanies1, ...selectedCompanies2].filter((value, index, self) => self.indexOf(value) === index);;
+
+    const selectedIndicator = document.getElementById('indicatorFilter').value;
+    const selectedChartType = document.getElementById('chartTypeFilter').value;
+
+     if (currentChart) {
+        currentChart.destroy();
+    }
+
+
+    if (selectedCompanies.length === 0) {
+         return; // Do nothing if no company is selected.
+    }
+
+
+
+    const datasets = selectedCompanies.map(companyName => {
+        const chartColors = getChartColors(companyName);
+
+        return {
+            label: companyName,
+            data: data[companyName][selectedIndicator],
+            borderColor: chartColors.borderColor,
+            backgroundColor: (selectedChartType === 'line' ? chartColors.backgroundColor + "80" : chartColors.backgroundColor),
+            tension: (selectedChartType === 'line' ? 0.4 : 0),
+            borderWidth: 1,
+            hoverOffset: 4
+        };
+    });
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    currentChart = new Chart(ctx, {
+        type: selectedChartType,
+        data: {
+            labels: data.years,
+            datasets: datasets
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    display: selectedChartType !== 'pie'
+                }
+            },
+            plugins: {
+              legend: {
+                    display: selectedChartType !== 'pie'
+                }
+            }
+        }
+    });
+}
+
+
+const companyFilter1 = document.getElementById('companyFilter1');
+const companyFilter2 = document.getElementById('companyFilter2');
+const indicatorFilter = document.getElementById('indicatorFilter');
+const chartTypeFilter = document.getElementById('chartTypeFilter');
+
+
+companyFilter1.addEventListener('change', updateChart);
+companyFilter2.addEventListener('change', updateChart);
+indicatorFilter.addEventListener('change', updateChart);
+chartTypeFilter.addEventListener('change', updateChart);
+
+updateChart(); // Initial chart display
+
+</script>
+
+</body>
+</html>

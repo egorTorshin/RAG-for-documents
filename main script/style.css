@@ -1,0 +1,245 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff; /* Белый */
+    margin: 0;
+    display: flex;
+    overflow: hidden;
+    height: 100vh;
+}
+
+nav {
+    background-color: #ed1c24; /* Красный МТС */
+    height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 200px;
+    opacity: 0.8;
+    transform: translateX(200px);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 1;
+}
+
+nav:hover {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav li {
+    margin-bottom: 10px;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 5px;
+    position: relative; /* Добавляем position: relative для позиционирования подчеркивания */
+    display: inline-block; /*  Делаем ссылку блочным элементом для подчеркивания */
+
+}
+nav a::after { /* Псевдоэлемент для создания подчеркивания */
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;  /* Изначально ширина подчеркивания 0 */
+    height: 2px;
+    background-color: white; /* Цвет подчеркивания */
+    transition: width 0.3s ease; /* Плавный переход ширины */
+}
+nav a:hover::after {
+    width: 100%; /* При наведении ширина подчеркивания становится 100% */
+}
+nav a:hover {
+    background-color: #d1161d; /* Более темный красный МТС */
+}
+
+nav a.active {
+    color: white; /* Цвет активной ссылки */
+}
+
+nav a.active::after { /* Подчеркивание для активной ссылки */
+    width: 100%;
+}
+
+
+.chat-container {
+    background-color: #f7f7f7; /* Светло-серый */
+    width: 100%;
+    height: 100vh;
+    margin-right: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: width 0.3s ease, margin-right 0.3s ease;
+    padding: 0;
+}
+
+
+
+nav:hover ~ .chat-container {
+    width: calc(100% - 200px);
+    margin-right: 250px;
+}
+
+
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: white;  /* Белый */
+
+}
+
+.message {
+    background-color: #f0f0f0; /* Очень светло-серый */
+    color: #333;  /* Темно-серый */
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+    display: inline-block;
+    max-width: 80%;
+    box-sizing: border-box;
+    vertical-align: top;
+    clear: both;
+    padding-bottom: 25px; /* Добавляем нижний отступ для времени */
+    position: relative
+
+
+}
+
+.message-time {
+
+    position: absolute;  /* Позиционируем абсолютно внутри .message */
+    bottom: 5px; /* Отступ снизу */
+    right: 10px; /* Отступ справа (для сообщений пользователя) */
+    left: 10px; /* Отступ слева (для сообщений бота) */
+    width: auto;
+
+}
+.user-message .message-time {
+    left: auto; /* Отменяем left для сообщений пользователя */
+    right: 10px ; /* Отступ справа для сообщений пользователя */
+    }
+.bot-message .message-time {
+    right: auto;
+    left: 10px;/* Отступ справа для сообщений бота */
+
+}
+
+.user-message {
+    background-color: #ed1c24;  /* Красный МТС */
+    color: white;  /* Белый */
+    float: right;
+    margin-left: 20%;
+    flex-grow: 10;
+}
+
+
+.bot-message {
+    float: left;
+    margin-right: 20%;
+}
+
+.input-feld {
+    display: flex;
+    padding: 20px;
+    border-top: 1px solid #ccc;
+    background-color: #ddd; /* Светло-серый */
+}
+
+
+#user-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    color: #333; /* Темно-серый */
+    background-color: #fff; /* Белый */
+}
+
+#send-btn {
+    padding: 10px;
+    border: none;
+    background-color: #ed1c24;  /* Красный МТС */
+    color: white;  /* Белый */
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+#send-btn:hover {
+    background-color:  #d1161d; /* Более темный красный МТС */
+}
+
+.fa-paper-plane {
+    font-size: 1.2em;
+}
+
+
+.chart-container {
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+#myChart {
+    width: 80%;
+    max-height: 90%;
+    height: auto;
+    background-color: #fff;  /* Белый */
+
+}
+.chart-controls {
+    display: flex;
+    flex-direction: row; /* Кнопки в ряд */
+    justify-content: center; /* Центрирование по горизонтали */
+    align-items: center; /* Центрирование по вертикали */
+    margin-bottom: 20px;
+    flex-wrap: wrap;       /* Добавлено: перенос кнопок на новую строку, если не помещаются */
+
+}
+
+.chart-controls button {
+    background-color: #ed1c24; /* Цвет МТС */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px; /* Скругление кнопок */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Плавное изменение цвета при наведении */
+    text-align: left; /* Текст выравнивается по левому краю */
+     margin: 10px; /* Отступы вокруг кнопок */
+    white-space: nowrap;
+}
+
+.chart-controls button:hover {
+    background-color: #d1161d; /* Более темный цвет МТС при наведении */
+}
+.chart-controls button.active-chart {
+    outline: 3px solid red; /* Синяя обводка */
+    outline-offset: 2px;
+}
+nav:hover ~ .chat-container {
+    width: calc(100% - 200px);
+    margin-right: 250px;
+    filter: blur(5px); /* Размытие при наведении на nav */
+    transition: filter 0.3s ease, width 0.3s ease, margin-right 0.3s ease; /* Добавляем transition для filter */
+
+}
+
+
+
